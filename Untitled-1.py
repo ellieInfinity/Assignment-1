@@ -1,3 +1,5 @@
+import time
+
 def read_product_data(file_path):
     products = []
     try:
@@ -47,13 +49,8 @@ def delete_product(products, product_id):
             return True
     return False
 
-def search_products(products, key, value):
-    if key == 'ID':
-        return [product for product in products if product[key] == int(value)]
-    elif key == 'Price':
-        return [product for product in products if product[key] == float(value)]
-    else:
-        return [product for product in products if value.lower() in product[key].lower()]
+def search_products_by_price(products, price):
+    return [product for product in products if product['Price'] == float(price)]
 
 def main():
     file_path = 'product_data.txt'
@@ -65,7 +62,7 @@ def main():
         print("2. Add product")
         print("3. Modify product")
         print("4. Delete product")
-        print("5. Search product")
+        print("5. Search product by price")
         print("6. Sort products by price")
         print("7. Save and exit")
         choice = input("Enter your choice: ")
@@ -101,19 +98,20 @@ def main():
             else:
                 print("Product not found.")
         elif choice == '5':
-            search_key = input("Enter the search key (ID, Name, Price, Category): ").title()
-            search_value = input("Enter the search value: ")
-            
-            results = search_products(products, search_key, search_value)
+            search_price = input("Enter the search price: ")
+            results = search_products_by_price(products, search_price)
             if results:
                 for result in results:
                     print(result)
             else:
                 print("No matching products found.")
         elif choice == '6':
+            start_time = time.time()
             products = bubble_sort_by_price(products)
             for product in products:
                 print(product)
+            end_time = time.time()
+            print(f"Sorted products in {end_time - start_time:.6f} seconds.")
         elif choice == '7':
             write_product_data(file_path, products)
             print("Products saved. Exiting...")
